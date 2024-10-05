@@ -12,8 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
-import java.awt.event.ActionEvent;
-import java.util.ResourceBundle;
 
 public class TicTacToe extends Application{
 
@@ -52,15 +50,21 @@ public class TicTacToe extends Application{
     }
 
     public void start(Stage primayStage) {
+
+        Button restartButton = new Button("Restart");
+        restartButton.setOnAction(event ->{
+            restart();
+        });
+        gameOver = false;
+
         GridPane grid = new GridPane();
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(grid);
-        HBox hbox = new HBox(Xscore, Oscore, Turn);
+        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton);
         borderPane.setTop(hbox);
 
 
         updateHeader();
-
 
 
         // nested for loop to create a 3X3 grid of buttons
@@ -92,6 +96,18 @@ public class TicTacToe extends Application{
             }
         }
 
+        // Create the Restart button
+//        Button restartButton = new Button("Restart Game");
+//        restartButton.setStyle("-fx-font-size: 20;");
+//
+//        // Set the action for the restart button to call the restart method
+//        restartButton.setOnAction(event -> restart());
+//
+//        // Add the restart button to the bottom of the BorderPane
+//        VBox vbox = new VBox(restartButton);
+//        vbox.setSpacing(10);  // Add spacing for the restart button
+//        borderPane.setBottom(vbox);
+
         Scene scene = new Scene(borderPane,300, 350);
 
         // Sets the title of the game window
@@ -113,6 +129,8 @@ public class TicTacToe extends Application{
                 buttons[row][col].setDisable(false); // Re-enable the button
             }
         }
+        x = true;
+        updateHeader();
     }
 
 
@@ -151,9 +169,13 @@ public void disableBoard() {
             }
             if(buttons[row][0].getText().equals(buttons[row][1].getText()) && buttons[row][0].getText().equals(buttons[row][2].getText())){
                 //do something
-                System.out.println(getCurrentTurn()+" wins");
                 disableBoard();
-
+                if(getCurrentTurn().equals("X")){
+                    Xwins++;
+                }else{
+                    Owins++;
+                }
+                System.out.println(getCurrentTurn()+ " wins");
                 return;
             }
         }
@@ -166,8 +188,14 @@ public void disableBoard() {
             }
             if(buttons[0][col].getText().equals(buttons[1][col].getText()) && buttons[0][col].getText().equals(buttons[2][col].getText())){
                 //do something
-                System.out.println(getCurrentTurn()+" wins");
+
                 disableBoard();
+                if(getCurrentTurn().equals("X")){
+                    Xwins++;
+                }else{
+                    Owins++;
+                }
+                System.out.println(getCurrentTurn()+ " wins");
                 return;
             }
         }
@@ -176,8 +204,14 @@ public void disableBoard() {
         //diagonal 1
         if(buttons[0][0].getText().equals(buttons[1][1].getText()) && buttons[0][0].getText().equals(buttons[2][2].getText()) && !(buttons[0][0].getText().equals(""))){
             //do something
-            System.out.println(getCurrentTurn()+" wins");
+
             disableBoard();
+            if(getCurrentTurn().equals("X")){
+                Xwins++;
+            }else{
+                Owins++;
+            }
+            System.out.println(getCurrentTurn()+ " wins");
             return;
         }
 
@@ -185,8 +219,14 @@ public void disableBoard() {
         //diagonal 2
         if(buttons[0][2].getText().equals(buttons[1][1].getText()) && buttons[0][2].getText().equals(buttons[2][0].getText()) && !(buttons[0][2].getText().equals(""))){
             //do something
-            System.out.println(getCurrentTurn()+" wins");
+
             disableBoard();
+            if(getCurrentTurn().equals("X")){
+                Xwins++;
+            }else{
+                Owins++;
+            }
+            System.out.println(getCurrentTurn()+ " wins");
             return;
         }
 
@@ -196,6 +236,7 @@ public void disableBoard() {
             for(int j=0;j<3;j++){
                 if(!(buttons[i][j].getText().equals(""))){
                     count++;
+
                 }
             }
         }

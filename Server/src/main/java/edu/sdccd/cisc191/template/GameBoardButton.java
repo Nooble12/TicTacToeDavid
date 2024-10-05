@@ -26,11 +26,12 @@ public class GameBoardButton extends Button {
         // Disable the button after it's been clicked
         setDisable(true);
 
-        //gameBoard.Check();
+
         gameBoard.Check();
 
         // Calling the switch method which switches between players in the game
         gameBoard.SwitchTurn();
+        gameBoard.updateHeader();
 
 //        gameBoard.restartButton();
 
