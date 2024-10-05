@@ -1,16 +1,16 @@
 package edu.sdccd.cisc191.template;
 
 // import statements
-import static javafx.application.Application.launch;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+
+import java.io.*;
 
 
 public class TicTacToe extends Application{
@@ -57,15 +57,22 @@ public class TicTacToe extends Application{
         });
         gameOver = false;
 
+        // SAVE GAME BUTTON
+        Button saveButton = new Button("Save Game");
+        saveButton.setOnAction(event -> saveGame());
+
+        // LOAD GAME BUTTON
+        Button loadButton = new Button("Load Game");
+        loadButton.setOnAction(event -> loadGame());
+
         GridPane grid = new GridPane();
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(grid);
-        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton);
+        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton, saveButton, loadButton);
         borderPane.setTop(hbox);
-
+        x = !x;
 
         updateHeader();
-
 
         // nested for loop to create a 3X3 grid of buttons
         for(int row = 0; row < 3; row++){
@@ -74,9 +81,9 @@ public class TicTacToe extends Application{
 
 
                 // size of each button
-                button.setMinSize(100,100);
+                button.setMinSize(160,150);
                 // set the font size of the text to 50
-                button.setStyle("-fx-font-size: 30;");
+                button.setStyle("-fx-font-size: 50;");
 
                 // Create final variables for row and column
                 final int r = row;
@@ -96,19 +103,7 @@ public class TicTacToe extends Application{
             }
         }
 
-        // Create the Restart button
-//        Button restartButton = new Button("Restart Game");
-//        restartButton.setStyle("-fx-font-size: 20;");
-//
-//        // Set the action for the restart button to call the restart method
-//        restartButton.setOnAction(event -> restart());
-//
-//        // Add the restart button to the bottom of the BorderPane
-//        VBox vbox = new VBox(restartButton);
-//        vbox.setSpacing(10);  // Add spacing for the restart button
-//        borderPane.setBottom(vbox);
-
-        Scene scene = new Scene(borderPane,300, 350);
+        Scene scene = new Scene(borderPane,470, 490);
 
         // Sets the title of the game window
         primayStage.setTitle("Tic -  Tac - Toe");
@@ -121,6 +116,46 @@ public class TicTacToe extends Application{
 
 
     } // end start();
+
+
+    // Save the game state to a file
+    private void saveGame() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("tic_tac_toe_save.dat"))) {
+            // Save the board state
+            String[][] boardState = new String[3][3];
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    boardState[i][j] = buttons[i][j].getText();
+                }
+            }
+            out.writeObject(boardState);
+
+            out.writeBoolean(x);  // Save whose turn it is
+            out.writeInt(Xwins);      // Save X's score
+            out.writeInt(Owins);      // Save O's score
+            System.out.println("Game saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving the game: " + e.getMessage());
+        }
+    }
+    private void loadGame() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("tic_tac_toe_save.dat"))) {
+            // Load the board state
+            String[][] boardState = (String[][]) in.readObject();
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    buttons[i][j].setText(boardState[i][j]);
+                }
+            }
+            x = in.readBoolean();  // Load whose turn it is
+            Xwins = in.readInt();      // Load X's score
+            Owins = in.readInt();      // Load O's score
+            updateHeader();
+            System.out.println("Game loaded successfully.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading the game: " + e.getMessage());
+        }
+    }
 
     public void restart() {
         for (int row = 0; row < 3; row++) {
@@ -246,6 +281,7 @@ public void disableBoard() {
             disableBoard();
         }
     }
+
 
 
 
