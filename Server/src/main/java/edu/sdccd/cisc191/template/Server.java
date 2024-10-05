@@ -14,12 +14,16 @@ import java.io.*;
  * to process the connection.
  */
 public class Server {
+
+    private static final int PORT = 12873;
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
 
     public void start(int port) throws Exception {
+        System.out.println("Tic-Tac-Toe server is running");
+
         serverSocket = new ServerSocket(port);
         clientSocket = serverSocket.accept();
         out = new PrintWriter(clientSocket.getOutputStream(), true);
