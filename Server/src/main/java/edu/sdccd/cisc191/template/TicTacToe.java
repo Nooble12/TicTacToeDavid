@@ -9,27 +9,35 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import java.io.*;
+import java.net.Socket;
 
 // The TicTacToe class extends the JavaFX Application
 public class TicTacToe extends Application{
 
+
+
+
     // Making labels to display the score for players X and O
     // and the current player's turn
+
+    private boolean gameOver = false;
     private GameBoardLabel Xscore = new GameBoardLabel();
     private GameBoardLabel Oscore = new GameBoardLabel();
     private GameBoardLabel Turn = new GameBoardLabel();
+    private Socket socket;
+
 
     // Variables to store the number of wins for players X and O
     private int Xwins = 0; // Tracks the number of games X has won
     private int Owins = 0; // Tracks the number of games O has won
 
-
+    // 2D array of type Button where each element is a button object
     public static Button[][] board = new Button[3][3];; //array representation of the game board
     private boolean x = true; // tracks whether it's X's or O'x turn
     public Button[][] buttons = new Button[3][3];
 
 
-    boolean gameOver = false;
+
 
     /**
      * launches the javaFX applicatgion
@@ -65,6 +73,7 @@ public class TicTacToe extends Application{
      */
     public void start(Stage primayStage) {
 
+        // RESTART BUTTON
         Button restartButton = new Button("Restart");
         restartButton.setOnAction(event ->{
             restart();
@@ -109,7 +118,7 @@ public class TicTacToe extends Application{
                     button.handleButtonClick();
                     TicTacToe.board[r][c] = button;
                     // stores the clicked button in the corresponding position
-                    //buttons[r][c] = button;
+                    // buttons[r][c] = button;
                 });
                 grid.add(button,column,row);
                 buttons[row][column]=button;
@@ -117,7 +126,7 @@ public class TicTacToe extends Application{
 
             }
         }
-
+        // Creating a scene object that will display the game user;'s interface
         Scene scene = new Scene(borderPane,470, 490);
 
         // Sets the title of the game window
