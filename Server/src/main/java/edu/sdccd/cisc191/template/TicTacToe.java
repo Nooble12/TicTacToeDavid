@@ -9,17 +9,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
-
 import java.io.*;
 
-
+// The TicTacToe class extends the JavaFX Application
 public class TicTacToe extends Application{
 
+    // Making labels to display the score for players X and O
+    // and the current player's turn
     private GameBoardLabel Xscore = new GameBoardLabel();
     private GameBoardLabel Oscore = new GameBoardLabel();
     private GameBoardLabel Turn = new GameBoardLabel();
-    private int Xwins = 0;
-    private int Owins = 0;
+
+    // Variables to store the number of wins for players X and O
+    private int Xwins = 0; // Tracks the number of games X has won
+    private int Owins = 0; // Tracks the number of games O has won
 
 
     public static Button[][] board = new Button[3][3];; //array representation of the game board
@@ -74,6 +77,7 @@ public class TicTacToe extends Application{
 
         updateHeader();
 
+
         // nested for loop to create a 3X3 grid of buttons
         for(int row = 0; row < 3; row++){
             for(int column = 0; column < 3; column++){
@@ -118,7 +122,7 @@ public class TicTacToe extends Application{
     } // end start();
 
 
-    // Save the game state to a file
+    // Method for saving the game to a file
     private void saveGame() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("tic_tac_toe_save.dat"))) {
             // Save the board state
@@ -138,6 +142,7 @@ public class TicTacToe extends Application{
             System.out.println("Error saving the game: " + e.getMessage());
         }
     }
+    // Method for loading in the saved game
     private void loadGame() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("tic_tac_toe_save.dat"))) {
             // Load the board state
@@ -150,14 +155,20 @@ public class TicTacToe extends Application{
             x = in.readBoolean();  // Load whose turn it is
             Xwins = in.readInt();      // Load X's score
             Owins = in.readInt();      // Load O's score
+            // Calling the updateHeader method
             updateHeader();
-            System.out.println("Game loaded successfully.");
+            Check();
+
+            System.out.println("Game loaded successfully!.");
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error loading the game: " + e.getMessage());
         }
+
     }
 
+    // Method for restarting the game
     public void restart() {
+        // iterating through each row and column
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 buttons[row][col].setText("");  // Clear the text on each button
@@ -165,10 +176,11 @@ public class TicTacToe extends Application{
             }
         }
         x = true;
+        // Calling the updateHeader method
         updateHeader();
     }
 
-
+    // Method for knowing whose turn it is
     public String getCurrentTurn(){
         String turn;
         if(x){
@@ -180,36 +192,53 @@ public class TicTacToe extends Application{
         return turn;
     }
 
-
+    // This method switches the current player's turn.
+    // The variable 'x' represents whether it's X's turn.
+    // If 'x' is true, it's X's turn, and if false, it's O's turn.
+    // The method toggles the value of 'x', so the turn is switched
+    // between X and O after each call.
     public void SwitchTurn(){
 
-        x=!x;
+        x=!x; // tggle the value of "x"
     }
 
-public void disableBoard() {
-    for (int row = 0; row < 3; row++) {
-        for (int col = 0; col < 3; col++) {
+    // Method for disabling the buttons on the game board
+    public void disableBoard() {
+
+        // Iterate through each row of the 3x3 grid
+        for (int row = 0; row < 3; row++) {
+            // For each row, iterate through each column
+            for (int col = 0; col < 3; col++) {
+                // Disable the button at the current row and column which makes it
+                // unclickable
             buttons[row][col].setDisable(true);
+            }
         }
     }
-}
+
     public void Check(){
         int count=0;
 
 
         //rows
+        // iterates over each row
         for(int row = 0; row < 3; row++){
+            // If the first button of the row is empty, it skips the check for that row using
+            // continue
             if(buttons[row][0].getText().equals("")){
                 continue;
             }
+            // Checks if all the buttons in the row have the same value
             if(buttons[row][0].getText().equals(buttons[row][1].getText()) && buttons[row][0].getText().equals(buttons[row][2].getText())){
-                //do something
+                // If they do, then the board is disabled
                 disableBoard();
+                // The current player's win count is incremented
                 if(getCurrentTurn().equals("X")){
                     Xwins++;
                 }else{
                     Owins++;
                 }
+                // prints the result
                 System.out.println(getCurrentTurn()+ " wins");
                 return;
             }
@@ -217,56 +246,62 @@ public void disableBoard() {
 
 
         //columns
+        // iterates over each column
         for(int col = 0; col < 3; col++){
+            // skips the check if the first button in the column is empty
             if(buttons[0][col].getText().equals("")){
                 continue;
             }
+            // Checks if all buttons in that column have the same text. If true, it declares a win
             if(buttons[0][col].getText().equals(buttons[1][col].getText()) && buttons[0][col].getText().equals(buttons[2][col].getText())){
-                //do something
-
+                // Disables the board
                 disableBoard();
                 if(getCurrentTurn().equals("X")){
                     Xwins++;
                 }else{
                     Owins++;
                 }
+                // Prints the winner
                 System.out.println(getCurrentTurn()+ " wins");
                 return;
             }
         }
 
 
-        //diagonal 1
+        //diagonal 1 ( top left to bottom right)
         if(buttons[0][0].getText().equals(buttons[1][1].getText()) && buttons[0][0].getText().equals(buttons[2][2].getText()) && !(buttons[0][0].getText().equals(""))){
-            //do something
 
+            // Disables the board
             disableBoard();
             if(getCurrentTurn().equals("X")){
+                // Updates the win count
                 Xwins++;
             }else{
                 Owins++;
             }
+            // Prints the winner
             System.out.println(getCurrentTurn()+ " wins");
             return;
         }
 
 
-        //diagonal 2
+        //diagonal 2 ( top right to bottom left)
         if(buttons[0][2].getText().equals(buttons[1][1].getText()) && buttons[0][2].getText().equals(buttons[2][0].getText()) && !(buttons[0][2].getText().equals(""))){
-            //do something
-
+            // Disables the board
             disableBoard();
             if(getCurrentTurn().equals("X")){
                 Xwins++;
             }else{
                 Owins++;
             }
+            // Prints the winner
             System.out.println(getCurrentTurn()+ " wins");
             return;
         }
 
 
         //tie
+        // Loops through the entire gameboard
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 if(!(buttons[i][j].getText().equals(""))){
@@ -275,8 +310,8 @@ public void disableBoard() {
                 }
             }
         }
+        // if all buttons are filled, it means no empty spots remain
         if(count==9){
-            //do something
             System.out.println("tie");
             disableBoard();
         }

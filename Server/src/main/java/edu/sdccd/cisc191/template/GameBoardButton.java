@@ -28,12 +28,11 @@ public class GameBoardButton extends Button {
 
 
         gameBoard.Check();
-
         // Calling the switch method which switches between players in the game
         gameBoard.SwitchTurn();
         gameBoard.updateHeader();
 
-//        gameBoard.restartButton();
+
 
 
 

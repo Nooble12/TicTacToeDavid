@@ -13,7 +13,7 @@ public class TicTacToeClient{
             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 
             // Simulate sending moves to the server
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 // Send move to the server (this would be based on actual gameplay in a real implementation)
                 output.writeUTF("Move " + (i + 1));  // Sending move
                 output.flush();
