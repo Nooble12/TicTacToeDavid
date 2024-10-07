@@ -3,7 +3,6 @@ package edu.sdccd.cisc191.template;
 // import statements
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.chart.Chart;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,15 +30,19 @@ public class TicTacToe extends Application{
 
 
     boolean gameOver = false;
-    private String currentPlayer = "X";
-    private Chart primayStage;
 
-    // launches the JavaFX application
+    /**
+     * launches the javaFX applicatgion
+     * @param args
+     */
     public static void main(String[] args) {
         // launches the application
         launch(args);
     }
 
+    /**
+     * Method for updating the header
+     */
     public void updateHeader() {
         // update labels
         // changes the text depending how many fishes or guesses are remaining in
@@ -52,6 +55,14 @@ public class TicTacToe extends Application{
 
     }
 
+    /**
+     *
+     * @param primayStage the primary stage for this application, onto which
+     * the application scene can be set. The primary stage will be embedded in
+     * the browser if the application was launched as an applet.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages and will not be embedded in the browser.
+     */
     public void start(Stage primayStage) {
 
         Button restartButton = new Button("Restart");
@@ -121,8 +132,10 @@ public class TicTacToe extends Application{
 
     } // end start();
 
+    /** Method for saving the game to a file
+     *
+     */
 
-    // Method for saving the game to a file
     private void saveGame() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("tic_tac_toe_save.dat"))) {
             // Save the board state
@@ -142,7 +155,11 @@ public class TicTacToe extends Application{
             System.out.println("Error saving the game: " + e.getMessage());
         }
     }
-    // Method for loading in the saved game
+
+    /** Method for loading in the saved game
+     *
+     */
+
     private void loadGame() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("tic_tac_toe_save.dat"))) {
             // Load the board state
@@ -166,7 +183,10 @@ public class TicTacToe extends Application{
 
     }
 
-    // Method for restarting the game
+    /**  Method for restarting the game
+     *
+     */
+
     public void restart() {
         // iterating through each row and column
         for (int row = 0; row < 3; row++) {
@@ -180,7 +200,11 @@ public class TicTacToe extends Application{
         updateHeader();
     }
 
-    // Method for knowing whose turn it is
+    /**  Method for knowing whose turn it is
+     *
+     * @return
+     */
+
     public String getCurrentTurn(){
         String turn;
         if(x){
@@ -192,17 +216,20 @@ public class TicTacToe extends Application{
         return turn;
     }
 
-    // This method switches the current player's turn.
-    // The variable 'x' represents whether it's X's turn.
-    // If 'x' is true, it's X's turn, and if false, it's O's turn.
-    // The method toggles the value of 'x', so the turn is switched
-    // between X and O after each call.
+    /** This method switches the current player's turn.
+     *  The variable 'x' represents whether it's X's turn.
+     *   If 'x' is true, it's X's turn, and if false, it's O's turn.
+     *   The method toggles the value of 'x', so the turn is switched
+     *   between X and O after each call.
+     */
     public void SwitchTurn(){
 
         x=!x; // tggle the value of "x"
     }
 
-    // Method for disabling the buttons on the game board
+    /**
+     * Method for disabling the buttons on the game board
+     */
     public void disableBoard() {
 
         // Iterate through each row of the 3x3 grid
@@ -216,6 +243,9 @@ public class TicTacToe extends Application{
         }
     }
 
+    /**
+     * Method for checking who won
+     */
     public void Check(){
         int count=0;
 
