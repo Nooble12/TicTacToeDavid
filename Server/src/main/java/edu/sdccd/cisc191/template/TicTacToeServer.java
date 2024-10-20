@@ -40,8 +40,7 @@ public class TicTacToeServer {
             // Simulate receiving game move from client (this would be more detailed in a real game)
             String clientMove = input.readUTF();  // read client's move
             System.out.println("Received move from client: " + clientMove);
-
-            // Simulate checking game result and updating the score
+// Simulate checking game result and updating the score
             String result = checkGameResult();  // Implement actual game logic here
             if (result.equals("X")) {
                 Xwins++;
