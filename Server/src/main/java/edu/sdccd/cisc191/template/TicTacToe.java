@@ -16,7 +16,6 @@ public class TicTacToe extends Application{
 
 
 
-
     // Making labels to display the score for players X and O
     // and the current player's turn
 
@@ -33,7 +32,7 @@ public class TicTacToe extends Application{
 
     // 2D array of type Button where each element is a button object
     public static Button[][] board = new Button[3][3];; //array representation of the game board
-    private boolean x = true; // tracks whether it's X's or O'x turn
+    private boolean x = false; // tracks whether it's X's or O'x turn
     public Button[][] buttons = new Button[3][3];
 
 
