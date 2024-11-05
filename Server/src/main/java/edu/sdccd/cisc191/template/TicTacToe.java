@@ -87,7 +87,6 @@ public class TicTacToe<T> extends Application{
         });
         gameOver = false;
 
-
         // SAVE GAME BUTTON
         Button saveButton = new Button("Save Game");
         saveButton.setOnAction(event -> saveGame());
