@@ -31,25 +31,14 @@ public class TicTacToe<T> extends Application{
     private GameBoardLabel Turn = new GameBoardLabel();
     private Socket socket;
 
-
-
-
     // Variables to store the number of wins for players X and O
     private int Xwins = 0; // Tracks the number of games X has won
     private int Owins = 0; // Tracks the number of games O has won
-
 
     // 2D array of type Button where each element is a button object
     public static Button[][] T = new Button[3][3];; //array representation of the game board
     private boolean x = false; // tracks whether it's X's or O'x turn
     public Button[][] buttons = new Button[3][3];
-
-
-
-
-
-
-
 
     /**
      * launches the javaFX applicatgion
@@ -105,8 +94,8 @@ public class TicTacToe<T> extends Application{
 
 
         // LOAD GAME BUTTON
-        //Button loadButton = new Button("Load Game");
-        //loadButton.setOnAction(event -> loadGame());
+        Button loadButton = new Button("Load Game");
+        loadButton.setOnAction(event -> loadGame());
 
         Button displayActionLog  = new Button("displayActionLog ");
         displayActionLog .setOnAction(event -> displayActionLog ());
@@ -114,7 +103,7 @@ public class TicTacToe<T> extends Application{
         GridPane grid = new GridPane();
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(grid);
-        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton, saveButton, displayActionLog );
+        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton, saveButton, loadButton, displayActionLog );
         borderPane.setTop(hbox);
         x = !x;
 
@@ -159,7 +148,7 @@ public class TicTacToe<T> extends Application{
             }
         }
         // Creating a scene object that will display the game user;'s interface
-        Scene scene = new Scene(borderPane,470, 490);
+        Scene scene = new Scene(borderPane,520, 550);
 
 
         // Sets the title of the game window
