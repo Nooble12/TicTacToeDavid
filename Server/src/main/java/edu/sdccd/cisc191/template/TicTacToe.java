@@ -1,8 +1,11 @@
 package edu.sdccd.cisc191.template;
 
+
 // import statements
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -10,16 +13,18 @@ import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import java.io.*;
 import java.net.Socket;
+import java.util.LinkedList;
+
 
 // The TicTacToe class extends the JavaFX Application
-public class TicTacToe extends Application{
-
-
+// Added generics
+public class TicTacToe<T> extends Application{
 
 
     // Making labels to display the score for players X and O
     // and the current player's turn
-
+    public static LinkedList<String> globalLinkedList = new LinkedList<String>();
+    private T[][] board;
     private boolean gameOver = false;
     private GameBoardLabel Xscore = new GameBoardLabel();
     private GameBoardLabel Oscore = new GameBoardLabel();
@@ -27,14 +32,21 @@ public class TicTacToe extends Application{
     private Socket socket;
 
 
+
+
     // Variables to store the number of wins for players X and O
     private int Xwins = 0; // Tracks the number of games X has won
     private int Owins = 0; // Tracks the number of games O has won
 
+
     // 2D array of type Button where each element is a button object
-    public static Button[][] board = new Button[3][3];; //array representation of the game board
-    private boolean x = true; // tracks whether it's X's or O'x turn
+    public static Button[][] T = new Button[3][3];; //array representation of the game board
+    private boolean x = false; // tracks whether it's X's or O'x turn
     public Button[][] buttons = new Button[3][3];
+
+
+
+
 
 
 
@@ -47,6 +59,7 @@ public class TicTacToe extends Application{
         // launches the application
         launch(args);
     }
+
 
     /**
      * Method for updating the header
@@ -61,7 +74,11 @@ public class TicTacToe extends Application{
 
 
 
+
+
+
     }
+
 
     /**
      *
@@ -73,6 +90,7 @@ public class TicTacToe extends Application{
      */
     public void start(Stage primayStage) {
 
+
         // RESTART BUTTON
         Button restartButton = new Button("Restart");
         restartButton.setOnAction(event ->{
@@ -80,22 +98,30 @@ public class TicTacToe extends Application{
         });
         gameOver = false;
 
+
         // SAVE GAME BUTTON
         Button saveButton = new Button("Save Game");
         saveButton.setOnAction(event -> saveGame());
 
+
         // LOAD GAME BUTTON
-        Button loadButton = new Button("Load Game");
-        loadButton.setOnAction(event -> loadGame());
+        //Button loadButton = new Button("Load Game");
+        //loadButton.setOnAction(event -> loadGame());
+
+        Button displayActionLog  = new Button("displayActionLog ");
+        displayActionLog .setOnAction(event -> displayActionLog ());
 
         GridPane grid = new GridPane();
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(grid);
-        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton, saveButton, loadButton);
+        HBox hbox = new HBox(Xscore, Oscore, Turn, restartButton, saveButton, displayActionLog );
         borderPane.setTop(hbox);
         x = !x;
 
+
         updateHeader();
+
+
 
 
         // nested for loop to create a 3X3 grid of buttons
@@ -104,19 +130,23 @@ public class TicTacToe extends Application{
                 GameBoardButton button = new GameBoardButton(row, column, this);
 
 
+
+
                 // size of each button
                 button.setMinSize(160,150);
                 // set the font size of the text to 50
                 button.setStyle("-fx-font-size: 50;");
 
+
                 // Create final variables for row and column
                 final int r = row;
                 final int c = column;
 
+
                 // Sets the action event for when the button is clicked
                 button.setOnAction(event -> {
                     button.handleButtonClick();
-                    TicTacToe.board[r][c] = button;
+                    TicTacToe.T[r][c] = button;
                     // stores the clicked button in the corresponding position
                     // buttons[r][c] = button;
                 });
@@ -124,26 +154,35 @@ public class TicTacToe extends Application{
                 buttons[row][column]=button;
 
 
+
+
             }
         }
         // Creating a scene object that will display the game user;'s interface
         Scene scene = new Scene(borderPane,470, 490);
 
+
         // Sets the title of the game window
         primayStage.setTitle("Tic -  Tac - Toe");
 
+
         // Set the scene of the primary stage to the one containing the buttons
         primayStage.setScene(scene);
+
 
         // Show the game window
         primayStage.show();
 
 
+
+
     } // end start();
+
 
     /** Method for saving the game to a file
      *
      */
+
 
     private void saveGame() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("tic_tac_toe_save.dat"))) {
@@ -156,6 +195,9 @@ public class TicTacToe extends Application{
             }
             out.writeObject(boardState);
 
+
+
+
             out.writeBoolean(x);  // Save whose turn it is
             out.writeInt(Xwins);      // Save X's score
             out.writeInt(Owins);      // Save O's score
@@ -165,9 +207,13 @@ public class TicTacToe extends Application{
         }
     }
 
+
+
+
     /** Method for loading in the saved game
      *
      */
+
 
     private void loadGame() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("tic_tac_toe_save.dat"))) {
@@ -185,16 +231,20 @@ public class TicTacToe extends Application{
             updateHeader();
             Check();
 
+
             System.out.println("Game loaded successfully!.");
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error loading the game: " + e.getMessage());
         }
 
+
     }
+
 
     /**  Method for restarting the game
      *
      */
+
 
     public void restart() {
         // iterating through each row and column
@@ -209,10 +259,12 @@ public class TicTacToe extends Application{
         updateHeader();
     }
 
+
     /**  Method for knowing whose turn it is
      *
      * @return
      */
+
 
     public String getCurrentTurn(){
         String turn;
@@ -225,6 +277,7 @@ public class TicTacToe extends Application{
         return turn;
     }
 
+
     /** This method switches the current player's turn.
      *  The variable 'x' represents whether it's X's turn.
      *   If 'x' is true, it's X's turn, and if false, it's O's turn.
@@ -233,13 +286,16 @@ public class TicTacToe extends Application{
      */
     public void SwitchTurn(){
 
-        x=!x; // tggle the value of "x"
+
+        x =! x; // toggle  the value of "x"
     }
+
 
     /**
      * Method for disabling the buttons on the game board
      */
     public void disableBoard() {
+
 
         // Iterate through each row of the 3x3 grid
         for (int row = 0; row < 3; row++) {
@@ -247,17 +303,49 @@ public class TicTacToe extends Application{
             for (int col = 0; col < 3; col++) {
                 // Disable the button at the current row and column which makes it
                 // unclickable
-            buttons[row][col].setDisable(true);
+                buttons[row][col].setDisable(true);
             }
         }
     }
+
+    public void actionLog(String playerWon){
+        globalLinkedList.add(playerWon);
+
+    }
+    public void displayActionLog ()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        // loop / recurse through the LinkedList and append the nodes to the string builder
+        for (String action : globalLinkedList) {
+            sb.append(action).append("\n");
+
+        }
+
+        // open a new window
+        // Creating a scene object that will display the game user;'s interface
+        Stage logStage = new Stage();
+        logStage.setTitle("Action Log");
+
+        Label logLabel = new Label(sb.toString());
+        System.out.println(sb.toString());
+        ScrollPane scrollPane = new ScrollPane(logLabel);
+        scrollPane.setFitToWidth(true);
+
+        Scene scene = new Scene(scrollPane, 400, 300);
+        logStage.setScene(scene);
+
+        logStage.show();
+
+        // set label text to the sb.toString()
+    }
+
 
     /**
      * Method for checking who won
      */
     public void Check(){
         int count=0;
-
 
         //rows
         // iterates over each row
@@ -274,14 +362,18 @@ public class TicTacToe extends Application{
                 // The current player's win count is incremented
                 if(getCurrentTurn().equals("X")){
                     Xwins++;
+                    actionLog("X won");
                 }else{
                     Owins++;
+                    actionLog("O won");
                 }
                 // prints the result
                 System.out.println(getCurrentTurn()+ " wins");
                 return;
             }
         }
+
+
 
 
         //columns
@@ -307,8 +399,11 @@ public class TicTacToe extends Application{
         }
 
 
+
+
         //diagonal 1 ( top left to bottom right)
         if(buttons[0][0].getText().equals(buttons[1][1].getText()) && buttons[0][0].getText().equals(buttons[2][2].getText()) && !(buttons[0][0].getText().equals(""))){
+
 
             // Disables the board
             disableBoard();
@@ -322,6 +417,8 @@ public class TicTacToe extends Application{
             System.out.println(getCurrentTurn()+ " wins");
             return;
         }
+
+
 
 
         //diagonal 2 ( top right to bottom left)
@@ -339,12 +436,15 @@ public class TicTacToe extends Application{
         }
 
 
+
+
         //tie
         // Loops through the entire gameboard
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 if(!(buttons[i][j].getText().equals(""))){
                     count++;
+
 
                 }
             }
@@ -359,6 +459,15 @@ public class TicTacToe extends Application{
 
 
 
+
+
+
+
 }
+
+
+
+
+
 
 
