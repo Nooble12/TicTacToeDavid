@@ -91,7 +91,6 @@ public class TicTacToe<T> extends Application{
         Button saveButton = new Button("Save Game");
         saveButton.setOnAction(event -> saveGame());
 
-
         // LOAD GAME BUTTON
         Button loadButton = new Button("Load Game");
         loadButton.setOnAction(event -> loadGame());
