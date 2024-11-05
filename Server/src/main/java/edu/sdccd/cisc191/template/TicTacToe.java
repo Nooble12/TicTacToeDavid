@@ -105,7 +105,6 @@ public class TicTacToe<T> extends Application{
         borderPane.setTop(hbox);
         x = !x;
 
-
         updateHeader();
 
 
