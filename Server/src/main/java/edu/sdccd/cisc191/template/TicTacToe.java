@@ -108,8 +108,6 @@ public class TicTacToe<T> extends Application{
         updateHeader();
 
 
-
-
         // nested for loop to create a 3X3 grid of buttons
         for(int row = 0; row < 3; row++){
             for(int column = 0; column < 3; column++){
