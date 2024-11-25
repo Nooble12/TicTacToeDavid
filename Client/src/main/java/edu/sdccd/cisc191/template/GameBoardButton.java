@@ -5,12 +5,12 @@ public class GameBoardButton extends Button {
 
     private int row;
     private int column;
-    private TicTacToe buttons;
+    private TicTacToeClient buttons;
 
-    private TicTacToe gameBoard;
+    private TicTacToeClient gameBoard;
 
     // constructor created to initialize the button with its position and the game board reference
-    public GameBoardButton(int row, int col, TicTacToe gameBoard) {
+    public GameBoardButton(int row, int col, TicTacToeClient gameBoard) {
         // Assign the row and column variables to the respective fields
         this.row = row;
         this.column = column;

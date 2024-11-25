@@ -1,69 +1,66 @@
 package edu.sdccd.cisc191.template;
+
+import edu.sdccd.edu.cisc191.ServerRequest;
+
 import java.io.*;
 import java.net.*;
+import java.util.LinkedList;
 
-public class TicTacToeServer {
+public class TicTacToeServer
+{
 
-    private static int Xwins = 0;
-    private static int Owins = 0;
+    private static final int PORT = 1234;
+    private static boolean isServerRunning = true;
+    public static LinkedList<String> globalLinkedList = new LinkedList<String>();
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(4652)) {
-            System.out.println("Tic Tac Toe Server is running...");
+    public static void main (String[] args)
+    {
+        try(ServerSocket serverSocket = new ServerSocket(PORT))
+        {
+            while(isServerRunning)
+            {
+                //listens for client
+                Socket socket = serverSocket.accept();
+                handleClient(socket);
+            }
+        } catch (IOException e)
+        {
+            System.out.println("Server exception: " + e);
+        }
+    }
 
-            while (true) {
-                // Wait for client connection
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client has connected.");
+    public static void handleClient(Socket inSocket) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(inSocket.getInputStream());
+             ObjectOutputStream outputStream = new ObjectOutputStream(inSocket.getOutputStream())) {
 
-                // Create input and output streams for communication with the client
-                DataInputStream input = new DataInputStream(clientSocket.getInputStream());
-                DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
+            ServerRequest update = (ServerRequest) inputStream.readObject();
 
-                // Server handles the game logic
-                handleGame(input, output);
+                // Handle different request types
+                switch (update.getRequestType())
+                {
+                    case "UPDATE_WIN": // Update the win log
+                        globalLinkedList.add(update.getMessage());
+                        outputStream.writeObject("Win log updated");
+                        break;
 
-                // Close the connection after the game is over
-                clientSocket.close();
-                System.out.println("Client disconnected.");
+                    case "GET_WIN_LOG": // Send the win log to the client
+                        outputStream.writeObject(globalLinkedList);
+                        break;
+
+                    default:
+                        outputStream.writeObject("Unknown request type");
+                outputStream.flush();
             }
 
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        }
-    }
-
-    // Simulated method to check the game status and send updated scores
-    private static void handleGame(DataInputStream input, DataOutputStream output) throws IOException {
-        boolean gameOver = false;
-        while (!gameOver) {
-            // Simulate receiving game move from client (this would be more detailed in a real game)
-            String clientMove = input.readUTF();  // read client's move
-            System.out.println("Received move from client: " + clientMove);
-// Simulate checking game result and updating the score
-            String result = checkGameResult();  // Implement actual game logic here
-            if (result.equals("X")) {
-                Xwins++;
-            } else if (result.equals("O")) {
-                Owins++;
-            }
-
-            // Send the updated score to the client
-            output.writeUTF("Score: X = " + Xwins + ", O = " + Owins);
-            output.flush();
-
-            if (result.equals("GameOver")) {
-                gameOver = true;
-                output.writeUTF("Game Over");
-                output.flush();
+        } finally {
+            try {
+                inSocket.close();
+            } catch (IOException e) {
+                System.out.println("Error closing input stream");
             }
         }
     }
 
-    // Simulated game result checking method
-    private static String checkGameResult() {
-        // Here you would implement actual logic to check the game result.
-        // For simplicity, we'll assume the game is in progress and return a simulated result.
-        return "X";  // This can be "X", "O", or "GameOver"
-    }
 }
